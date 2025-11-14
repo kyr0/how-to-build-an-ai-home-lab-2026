@@ -332,7 +332,7 @@ body::after {
   position: relative;
   z-index: 2;
   background: var(--color-surface-glass);
-  backdrop-filter: saturate(160%) blur(22px);
+  backdrop-filter: saturate(160%) blur(4px);
   border: 1px solid rgba(var(--color-teal-500-rgb), 0.16);
   box-shadow: 0 40px 140px rgba(10, 24, 64, 0.32);
   border-radius: 24px;

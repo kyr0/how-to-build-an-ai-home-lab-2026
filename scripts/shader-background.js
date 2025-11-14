@@ -48,11 +48,11 @@ vec2 nodePosition(float layer, float index) {
   float j = hash21(vec2(layer, index)) - 0.5;
   float y = baseY + j * 0.22;
 
-  // Faster drift / wobble
-  float t = u_time * 1.8;
+  // Slower drift / wobble
+  float t = u_time * 0.5;
   float phase = hash21(vec2(layer * 13.0, index * 17.0)) * PI * 2.0;
   y += sin(t + phase) * 0.03;
-  x += cos(t * 3.5 + phase) * 0.03;
+  x += cos(t * 1.0 + phase) * 0.03;
 
   // Keep nodes on screen
   y = clamp(y, 0.04, 0.96);
@@ -73,8 +73,8 @@ void main() {
   vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
   vec2 uv = (v_uv - 0.5) * aspect + 0.5;
 
-  // Background gradient (faster)
-  float t = u_time * 0.35;
+  // Background gradient (slower)
+  float t = u_time * 0.15;
   float g = uv.y + 0.15 * sin(t + uv.x * 4.0);
   vec3 bgA = vec3(0.01, 0.02, 0.06);
   vec3 bgB = vec3(0.03, 0.06, 0.12);
@@ -123,12 +123,12 @@ void main() {
   color += linkColor * edges * 1.8;
   color += haloColor * nodeHalo * 0.75;
 
-  // Pulsing node cores (faster)
-  float pulse = 0.6 + 0.4 * sin(u_time * 6.5);
+  // Pulsing node cores (slower)
+  float pulse = 0.6 + 0.4 * sin(u_time * 2.0);
   color += nodeColor * nodeCore * pulse;
 
-  // Subtle scanline / activity band (faster and more visible)
-  float band = smoothstep(0.0, 0.4, sin(uv.y * 18.0 + u_time * 3.5));
+  // Subtle scanline / activity band (slower)
+  float band = smoothstep(0.0, 0.4, sin(uv.y * 18.0 + u_time * 1.0));
   color += linkColor * band * 0.12 * edges;
 
   // Vignette
