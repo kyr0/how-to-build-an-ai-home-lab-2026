@@ -49,10 +49,10 @@ vec2 nodePosition(float layer, float index) {
   float y = baseY + j * 0.22;
 
   // Faster drift / wobble
-  float t = u_time * 1.0;
+  float t = u_time * 1.8;
   float phase = hash21(vec2(layer * 13.0, index * 17.0)) * PI * 2.0;
   y += sin(t + phase) * 0.03;
-  x += cos(t * 2.0 + phase) * 0.03;
+  x += cos(t * 3.5 + phase) * 0.03;
 
   // Keep nodes on screen
   y = clamp(y, 0.04, 0.96);
@@ -63,8 +63,8 @@ vec2 nodePosition(float layer, float index) {
 
 void accumulateEdge(inout float glow, vec2 uv, vec2 a, vec2 b, float thickness) {
   float d = lineDistance(uv, a, b);
-  float g1 = smoothstep(thickness * 2.5, 0.0, d);
-  float g2 = smoothstep(thickness * 1.0, 0.0, d);
+  float g1 = smoothstep(thickness * 1.5, 0.0, d);
+  float g2 = smoothstep(thickness * 0.5, 0.0, d);
   glow += g1 * 0.4 + g2 * 0.6;
 }
 
@@ -74,7 +74,7 @@ void main() {
   vec2 uv = (v_uv - 0.5) * aspect + 0.5;
 
   // Background gradient (faster)
-  float t = u_time * 0.2;
+  float t = u_time * 0.35;
   float g = uv.y + 0.15 * sin(t + uv.x * 4.0);
   vec3 bgA = vec3(0.01, 0.02, 0.06);
   vec3 bgB = vec3(0.03, 0.06, 0.12);
@@ -90,13 +90,13 @@ void main() {
       vec2 p = nodePosition(float(l), float(i));
       float d = length(uv - p);
 
-      nodeCore += smoothstep(0.018, 0.0, d);
-      nodeHalo += smoothstep(0.06, 0.0, d);
+      nodeCore += smoothstep(0.012, 0.0, d);
+      nodeHalo += smoothstep(0.035, 0.0, d);
     }
   }
 
-  // Edges between neighboring layers
-  const float thickness = 0.0045;
+  // Edges between neighboring layers (sharper)
+  const float thickness = 0.003;
   for (int l = 0; l < LAYERS - 1; ++l) {
     for (int i = 0; i < NODES_PER_LAYER; ++i) {
       vec2 a = nodePosition(float(l), float(i));
@@ -112,24 +112,24 @@ void main() {
     }
   }
 
-  // Colors
-  vec3 linkColor = vec3(0.16, 0.75, 0.96);
-  vec3 nodeColor = vec3(0.90, 0.96, 1.00);
-  vec3 haloColor = vec3(0.30, 0.20, 0.60);
+  // Colors (more vibrant and dominant)
+  vec3 linkColor = vec3(0.25, 0.85, 1.0);
+  vec3 nodeColor = vec3(0.95, 1.0, 1.0);
+  vec3 haloColor = vec3(0.40, 0.30, 0.75);
 
   vec3 color = base;
 
-  // Edges and halos (more visible)
-  color += linkColor * edges * 1.2;
-  color += haloColor * nodeHalo * 0.5;
+  // Edges and halos (more visible and dominant)
+  color += linkColor * edges * 1.8;
+  color += haloColor * nodeHalo * 0.75;
 
   // Pulsing node cores (faster)
-  float pulse = 0.6 + 0.4 * sin(u_time * 4.0);
+  float pulse = 0.6 + 0.4 * sin(u_time * 6.5);
   color += nodeColor * nodeCore * pulse;
 
-  // Subtle scanline / activity band (faster)
-  float band = smoothstep(0.0, 0.4, sin(uv.y * 18.0 + u_time * 2.0));
-  color += linkColor * band * 0.05 * edges;
+  // Subtle scanline / activity band (faster and more visible)
+  float band = smoothstep(0.0, 0.4, sin(uv.y * 18.0 + u_time * 3.5));
+  color += linkColor * band * 0.12 * edges;
 
   // Vignette
   vec2 centered = (uv - 0.5) * aspect;
@@ -186,7 +186,7 @@ export default class ShaderBackground {
 
     const gl = this.canvas.getContext("webgl", {
       alpha: true,
-      antialias: true,
+      antialias: false,
       premultipliedAlpha: false,
     });
 
