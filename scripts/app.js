@@ -20,12 +20,14 @@ function updateIndicators() {
     state.currentIndicator.textContent = String(currentSlide);
   }
 
+  // Prev button is always enabled (wraps to last slide when on slide 1)
   if (state.prevBtn) {
-    state.prevBtn.disabled = currentSlide === 1;
+    state.prevBtn.disabled = false;
   }
 
+  // Next button is always enabled (wraps to first slide when on last slide)
   if (state.nextBtn) {
-    state.nextBtn.disabled = currentSlide === totalSlides;
+    state.nextBtn.disabled = false;
   }
 }
 
@@ -54,7 +56,18 @@ function showSlide(target) {
 }
 
 function changeSlide(delta) {
-  showSlide(currentSlide + delta);
+  let target = currentSlide + delta;
+  
+  // Wrap around: if going back from slide 1, go to last slide
+  if (target < 1) {
+    target = totalSlides;
+  }
+  // Wrap around: if going forward from last slide, go to slide 1
+  else if (target > totalSlides) {
+    target = 1;
+  }
+  
+  showSlide(target);
 }
 
 function goToSlide(target) {
@@ -76,7 +89,8 @@ function handleKeydown(event) {
       event.preventDefault();
       goToSlide(1);
       break;
-    case "End":
+    case "e":
+    case "E":
       event.preventDefault();
       goToSlide(totalSlides);
       break;
