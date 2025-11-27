@@ -166,6 +166,14 @@ function handleClick(event) {
     return;
   }
   
+  // On touch devices, ignore click events that follow touch events
+  // Check if this is likely a click from a touch event
+  const timeSinceLastTouch = Date.now() - lastTapTime;
+  if (timeSinceLastTouch < 600) {
+    // This click likely came from a touch event, ignore it
+    return;
+  }
+  
   // Check if we clicked on a button, link, or navigation area
   const target = event.target;
   const isClickable = target.closest('button, a, input, textarea, select, .navigation');
@@ -255,17 +263,28 @@ function handleTouchEnd(event) {
       event.preventDefault();
       touchHandled = true;
       changeSlide(1);
+      // Prevent click event from firing
+      setTimeout(() => {
+        touchHandled = false;
+      }, 600);
     }
     // Swipe right = previous slide
     else if (deltaX > 0) {
       event.preventDefault();
       touchHandled = true;
       changeSlide(-1);
+      // Prevent click event from firing
+      setTimeout(() => {
+        touchHandled = false;
+      }, 600);
     }
   }
   // Check if it's a tap (small movement)
   // Increased threshold slightly to allow for natural finger movement
   else if (absDeltaX < 40 && absDeltaY < 40 && !isClickable) {
+    // Prevent default to stop click event from firing
+    event.preventDefault();
+    
     // Tap to navigate based on screen position
     const currentTime = Date.now();
     const timeDiff = currentTime - lastTapTime;
@@ -279,23 +298,24 @@ function handleTouchEnd(event) {
     // If double tap (within 300ms), do nothing (user might be zooming)
     if (timeDiff < 300 && timeDiff > 0) {
       lastTapTime = 0;
+      touchHandled = true; // Prevent click event
+      setTimeout(() => {
+        touchHandled = false;
+      }, 600);
       return;
     }
     
-    // Determine which side of screen was tapped
-    const screenWidth = window.innerWidth;
-    const tapX = touchEndX;
-    const isLeftSide = tapX < screenWidth / 2;
+    // Set touchHandled immediately to prevent click event from firing
+    touchHandled = true;
     
     // Single tap - always go forward after a short delay
     tapTimeout = setTimeout(() => {
-      touchHandled = true;
       changeSlide(1);  // Always go forward
       tapTimeout = null;
-      // Reset flag after a delay to allow click events later
+      // Reset flag after a longer delay to prevent click events
       setTimeout(() => {
         touchHandled = false;
-      }, 300);
+      }, 600);
     }, 100);
     
     lastTapTime = currentTime;
