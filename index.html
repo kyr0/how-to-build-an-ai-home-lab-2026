@@ -21,7 +21,9 @@
             <p class="slide-subtitle">Based on the example: KI-Kompetenzzentrum Medien (KI.M)</p>
             <div class="meta-info">
                 <i>On-Premise AI Infrastructure &amp; Deployment</i>
-                <p style="margin-top: 42px; font-size: 14px;">- Lightning Talk • 15 Minutes - <br /><br />- 5 Minutes Live Demo -</p>
+                <p style="margin-top: 42px; font-size: 14px;">- Lightning Talk -</p>
+
+                <p style="margin-top: 42px; font-size: 14px;">Aron Homberg<br />November 2025</p>
             </div>
         </div>
 
@@ -60,9 +62,9 @@
                     <span class="flow-arrow">→</span>
                     <div class="flow-item">Inference Engine<br/><small>vLLM/SGLang/Ollama</small></div>
                     <span class="flow-arrow">→</span>
-                    <div class="flow-item">Models<br/><small>Open Weight</small></div>
+                    <div class="flow-item">Models<br/><small>Open Weight up to 120B</small></div>
                     <span class="flow-arrow">→</span>
-                    <div class="flow-item">Prototypes<br/><small>Radio Bot, Archivar...</small></div>
+                    <div class="flow-item">Prototypes<br/><small>Custom Software</small></div>
                 </div>
                 <div class="two-column">
                     <div class="section-content">
@@ -74,7 +76,7 @@
                             <li>Storage systems / Backup System</li>
                         </ul>
                         <div style="margin-top: 20px;">
-                            <img src="files/server-photo.png" alt="Server Hardware" style="width: 100%; max-width: 400px; border-radius: 8px;" />
+                            <img src="files/server-photo.png" alt="Server Hardware" style="max-height: 150px; max-width: 400px; border-radius: 8px;" />
                         </div>
                     </div>
                     <div class="section-content">
@@ -87,14 +89,7 @@
                                     <li>gpt-oss-120b</li>
                                     <li>Qwen3-Embedding-8B</li>
                                     <li>Qwen3-Omni-30B-A3B-Instruct</li>
-                                    <li>MiniCPM-V-4_5</li>
-                                </ul>
-                            </li>
-                            <li>Prototype development:<br />
-                                <ul>
-                                    <li>Radio Chatbot</li>
-                                    <li>AV Analysis</li>
-                                    <li>Persona Simulation</li>
+                                    <li>...</li>
                                 </ul>
                             </li>
                         </ul>
@@ -114,31 +109,28 @@
                             <li><strong>Hardware:</strong> 1x NVIDIA H200 NVL (141GB), <b>1x DGX Spark</b></li>
                             <li><strong>Software:</strong> vLLM, sglang, ollama, HF Transformers; Pytorch + Unsloth</li>
                         </ul>
-                        <h4 style="color: var(--color-primary); margin-bottom: 16px;">Why?</h4>
-                        <ul class="bullet-list">
-                            <li>Evaluate all models suitable for KMUs (≤50k invest)</li>
-                            <li>Prioritize peak performance over scaling</li>
-                            <li>Load multiple models per prototype as needed (LLM, embedding, ASR, etc.)</li>
-                            <li>Use containers with specialized configs for optimization</li>
-                            <li>Prototypes access inference servers via container bridge network</li>
-                        </ul>
+
                         <div class="highlight-box" style="margin-top: 20px;">
-                            <strong>The NVIDIA DGX Spark? 🫩</strong><br/>
-                            Yes - for prototypes using <strong>sparse/small models only</strong> in limited user demo sessions.
+                            <strong>Why the NVIDIA DGX Spark? 🫩</strong><br/>
+                            <br />
+                            <ul>
+                                <li>prototypes using <strong>sparse/small models only</strong> in limited user demo sessions (1-2 concurrent users)</li>
+                                <li>long-running <i>and slow</i> batch/training jobs</li>
+                                <li>testing large models in slow speed (verification)</li>
+                                <li>fint-tuning large models (with highly optimized Unsloth kernels)</li>
+                            </ul>
                         </div>
+                        
                     </div>
                     <div class="section-content">
-                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">NeuraMancer.de</h3>
+                        <h4 style="color: var(--color-primary); margin-bottom: 16px;">Methodologies</h4>
                         <ul class="bullet-list">
-                            <li><strong>Hardware:</strong> 4x RTX 6000 Ada (48GB), 1x RTX 4000 Ada SFF (20GB)</li>
-                            <li><strong>Software:</strong> Custom inference (16-32 containers/GPU), Tensorflow</li>
-                        </ul>
-                        <h4 style="color: var(--color-primary); margin-bottom: 16px;">Why?</h4>
-                        <ul class="bullet-list">
-                            <li>Training our own BNN deepfake model on 2x RTX 6000 Ada GPUs</li>
-                            <li>Small, fast model lets us dedicate 2x RTX 6000 Ada to inference + 1x RTX 4000 Ada SFF at Hetzner</li>
-                            <li>Prioritized inference scaling over peak performance</li>
-                            <li>16-32 simultaneous inference processes per GPU</li>
+                            <li>Evaluate the best open weight models suitable for KMUs (≤50k invest)</li>
+                            <li>Prioritize peak quality over scaling</li>
+                            <li>Focus on smart ensemble systems, using small models in combination to achieve larger goals</li>
+                            <li>Simply load multiple models per prototype just as needed (LLM, embedding, ASR, etc.)</li>
+                            <li>Per model deployment, use specialized configs per inference engine (we are GPU-bound, not CPU/RAM-bound)</li>
+                            <li>Make prototypes easily reproducible and deployable, create great documentation, publish benchmarks and how-tos</li>
                         </ul>
                     </div>
                 </div>
@@ -147,13 +139,14 @@
 
         <!-- Slide 7: Prosumer Path -->
         <div class="slide" data-slide="5">
-            <h2 class="slide-title">You're GPU-Rich! Now, How Do You Run True AI at Home?</h2>
+            <h2 class="slide-title">You're GPU-Rich!</h2>
+            <p class="slide-subtitle">But How Do I Run AI at Home?</p>
             <div class="slide-content">
                 <div class="two-column">
                     <div class="section-content">
 
-                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">The Dream</h3>
-                        Run state-of-the-art models like:
+                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">The Big Dream</h3>
+                        Let's run state-of-the-art models like:
 
                             <ul class="bullet-list" style="font-size: 19px; margin-bottom: 0;">
 
@@ -167,27 +160,31 @@
                                 <li>
                                     <code>Qwen3-Embedding-8B</code>
                                 </li>
-                                <li>
-                                    <code>MiniCPM-V-4_5</code>
-                                </li>
                        
                             </ul>
-                            <em>locally</em> for ultimate privacy, total control, hands-on finetuning, prototyping, learning, and <strong>usable performance</strong>.
+                            <em>locally</em> for ultimate <b>privacy</b>, total <b></b>control</b>, custom <b>finetuning</b>, prototyping, learning, and <strong>decent performance</strong> for a <b>single user use-case</b>.
 
                             <div class="highlight-box" style="padding: 22px 28px;">
-                                <strong>Goal:</strong> No external APIs. Mix-and-match LLMs, TTS, STT, embedders.
+                                <strong>Goal:</strong> No external APIs. Mix-and-match LLMs, TTS, STT, ...
                             </div>
                     </div>
                     <div class="section-content">
                         <h3 style="color: var(--color-primary); margin-bottom: 16px;">The Reality</h3>
                             <ul class="bullet-list" style="font-size: 19px; margin-bottom: 0;">
                                 <li style="margin-top: 10px;">
-                                    <strong>Reality Check:</strong> Inference of large models requires <span style="background:var(--color-bg-accent);padding:2px 7px;border-radius:5px;">~128GB</span> of "VRAM" - offloading to RAM is not an option - ~4x performance penalty.
+                                    <strong>Reality Check:</strong> Inference of large models requires <span style="background:var(--color-bg-accent);padding:2px 7px;border-radius:5px;">~ > 80 GB</span> of VRAM w/o offloading to RAM.
+                                    
+                                </li>
+                                <li>
+                                    Usually, that's a > 10k € investment - if we go for high-end GPUs that are optimited for<b>memory bandwidth</b>.
+                                </li>
+                                <li>
+                                    But... if we don't need to scale (single-user use-case), and if we use sparse/MoE models, we can get away with cheaper, ARM-based APU/NPU systems from AMD, Apple, or even NVIDIA.
                                 </li>
                             </ul>
 
                             <div class="highlight-box">
-                                    <strong>Trick Question:</strong> Must you buy a 50.000€ AI server? <span style="color: var(--color-primary); font-weight: bold;">No - but <i>be cautious</i>!</span>
+                                    <strong>Guess:</strong> How low can you go in budget? <span style="color: var(--color-primary); font-weight: bold;">10k €? 5k €? 2k €?</span>
                                 
                             </div>
                     </div>
@@ -211,10 +208,10 @@
                         <ul class="bullet-list">
                             <li><strong>Option A (The Risk): ~€1,600</strong><br/>
                                 <strong>Brand:</strong> Bosgame M5 AI<br/>
-                                <em>Risk:</em> Budget brands (like Beelink, GMKtec) have a history of hardware flaws and poor support. Bosgame is better, but the risk remains.</li>
+                                <em>Risk:</em> Budget brands (like Beelink, GMKtec) have a history of hardware flaws and poor support. Bosgame has a better reputation, but the risk remains. Systems notoriously overheat!</li>
                             <li><strong>Option B (The "Safe" Bet): ~€2,500</strong><br/>
                                 <strong>Brand:</strong> Framework Desktop (Strix Halo Base)<br/>
-                                <em>Benefit:</em> Superior quality, cooling, modularity, reliability, and support.</li>
+                                <em>Benefit:</em> Superior quality, cooling, modularity, reliability, and support. No risk of overheating! A decent option for a modern workstation.</li>
                         </ul>
                     </div>
                     <div class="section-content" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
@@ -243,7 +240,8 @@
                             <li><strong>Benchmark Q4K-XL</strong> (<code>GLM-4.5-Air-UD-Q4K-XL-GGUF</code>): <strong>~15-20 tokens/sec</strong><br/>
                             <li><strong>Benchmark Dense Model</strong> (<code>Llama 3.3 70B Q8</code>): <strong>~2,5 tokens/sec</strong><br/>
                             <li><strong>Memory Bandwidth:</strong> ~215 GB/s (real-world)</li>
-                            <li><strong>TOPS:</strong> <strong>79 GPU TOPS @ INT8</strong> (304 int4 sparse)</li>
+                            <li><strong>TOPS:</strong> <strong>79 GPU TOPS @ INT8</strong> (304 int4 sparse)</li><li>- 50 TOPS XDNA 2 NPU</li>
+                            <li><strong>Gaming/Rendering Performance</strong> comparable to <a href="https://www.igorslab.de/amd-ryzen-ai-max-395-strix-halo-apu-anspruchsvolle-benchmarks-und-ehrgeizige-vergleiche/">NVIDIA RTX 4070 Mobile</a></li>
                         </ul>
                         <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">⚠️ The Catch: The Software (ROCm)</h3>
                         <ul class="bullet-list">
@@ -257,7 +255,7 @@
                         <img src="files/strix_summary-results-tg.png" alt="Strix Halo Benchmark Results" style="width: 100%; border-radius: 8px; margin-top: 20px;" />
 
                         <div class="highlight-box" style="margin-top: 20px;">
-                            <strong>Verdict:</strong> Amazing performance-per-dollar if you are willing to navigate the ROCm software stack
+                            <strong>Verdict:</strong> Amazing performance-per-dollar for "prosumers" if you are willing to navigate the ROCm software stack (a challenge, but doable)
                         </div>
                     </div>
                 </div>
@@ -267,7 +265,7 @@
         <!-- Slide 10: NVIDIA DGX Spark -->
         <div class="slide" data-slide="10">
             <h2 class="slide-title">Option 2: NVIDIA DGX Spark</h2>
-            <p class="slide-subtitle">The "Vendor/Dealer Risk-Free" <strong>Developer</strong> Box</p>
+            <p class="slide-subtitle">The "Vendor/Dealer Risk-Free" <strong>Developer</strong> Box for professionals</p>
             <div class="slide-content">
                 <div class="two-column">
                     <div class="section-content">
@@ -326,7 +324,7 @@
         <!-- Slide 12: Apple Mac Studio -->
         <div class="slide" data-slide="12">
             <h2 class="slide-title">Option 3: Apple Mac Studio (M4 Max or even M3 Ultra)</h2>
-            <p class="slide-subtitle">The "It Just Works" Option</p>
+            <p class="slide-subtitle">The "It Just Works" Option for whom can afford it</p>
             <div class="slide-content">
                 <div class="two-column">
                     <div class="section-content">
@@ -339,7 +337,9 @@
                             <li><strong>Price:</strong> <strong>~€4,200</strong></li>
                         </ul>
                         <div class="highlight-box" style="margin-top: 20px;">
-                            <strong>The NPU (Neural Engine) is currently irrelevant for most LLM inference.</strong> Everything runs on the GPU cores (Metal) and Unified Memory
+                            <strong>The NPU (Neural Engine) is currently under-utilized for most inference workloads.</strong> Almost everything runs on the GPU cores (Metal / MPS).
+                            There are some exceptions though - check <a target="_blank" href="https://github.com/FluidInference/mobius">möbius</a> and thier amazing work on ANE and NPU inference.
+                            It still utilizes unified memory, but you can parallelize the inference workload across the ANE/NPU and the GPU tensor cores.
                         </div>
                     </div>
                     <div class="section-content">
@@ -379,7 +379,7 @@
                             <li><code>Llama-3.3-70B-Q8</code>: up to ~4-5 t/s</li>
                         </ul>
                         <div class="highlight-box" style="margin-top: 10px;">
-                            <strong>Verdict:</strong> The most stable, efficient, and silent option. A fantastic "prosumer" choice if you <strong>don't</strong> need CUDA.
+                            <strong>Verdict:</strong> The most stable, efficient, and silent option. A fantastic "prosumer" choice if you <strong>don't</strong> need CUDA (can MLX-convert your models and use an mlx-based inference engine).
                         </div>
                     </div>
                     <div class="section-content">
@@ -442,7 +442,7 @@
                 <p style="margin-bottom: 20px;">Startups often seek their own IP. But how do you build it? You either <em>learn</em> and <em>invent</em> or you <em>adapt</em>. But open models are open, <em>right</em>?</p>
                 <div class="two-column">
                     <div class="section-content">
-                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">Open Source (e.g., AllenAI Olmo2)</h3>
+                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">Open Source (e.g., AllenAI <a href="https://huggingface.co/collections/allenai/olmo-3" target="_blank">Olmo3</a>)</h3>
                         <ul class="bullet-list">
                             <li>You get the <strong>weights</strong> of the model</li>
                             <li>You get the <strong>documentation/paper</strong></li>
@@ -455,15 +455,16 @@
                         </div>
                     </div>
                     <div class="section-content">
-                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">Open Weight (e.g., Qwen3)</h3>
+                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">Open Weight (e.g., <a href="https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct" target="_blank">Qwen3</a>)</h3>
                         <ul class="bullet-list">
                             <li>You get the <strong>model weights</strong> (the final product)</li>
                             <li>You <em>might</em> get <em>some</em> source code</li>
                             <li>You <strong>do not</strong> get the training data or the full "recipe"</li>
                             <li>You can <em>use</em> and <em>finetune</em> the model, but you cannot <em>replicate</em> it from scratch</li>
+                            <li>You <em>need to check the license</em> <i>(some contain restrictions for commercial use)</i></li>
                         </ul>
                         <div class="highlight-box" style="margin-top: 20px;">
-                            <strong>For on-premise inference, "Open Weight" is all you need.</strong><br/>
+                            <strong>For on-premise inference, "Open Weight" is all you need (if the license allows you to).</strong><br/>
                         </div>
                     </div>
                 </div>
@@ -810,6 +811,7 @@
                         <ul class="bullet-list">
                             <li><strong>Don't:</strong> Run <code>python my_app.py</code> or an inference server in a <code>screen</code> session etc..</li>
                             <li><strong>Do:</strong> Use <strong>Containers</strong></li>
+                            <li><strong>I publish such containers!</strong> Here's an example: <a href="https://github.com/kyr0/qwen3-omni-vllm-docker" target="_blank">qwen3-omni-vllm-docker</a></li>
                         </ul>
 
                         <div class="highlight-box" style="margin-top: 20px;">
@@ -917,8 +919,9 @@
                             <li><strong>Use a Modern Inference Engine:</strong>
                                 <ul>
                                     <li><strong>vLLM:</strong> Best for high-throughput (many users)</li>
-                                    <li><strong>sglang:</strong> Best for low-latency (chatbots)</li>
-                                    <li><strong>llama.cpp:</strong> Best for CPU and non-NVIDIA (Mac, AMD)</li>
+                                    <li><strong>SGLang:</strong> Best for low-latency (TTFT) and highly optimized setups</li>
+                                    <li><strong>llama.cpp/Ollama:</strong> Best for CPU and non-NVIDIA (Mac, AMD)</li>
+                                    <li><strong>möbius:</strong> On edge devices, facilitating ANE/NPU inference (not yet mainstream)</li>
                                 </ul>
                             </li>
                         </ul>
@@ -967,7 +970,7 @@
                             <li><strong>Ensure AI Literacy:</strong> (Art. 4) You are already required to be training your staff</li>
                         </ul>
                         <div class="highlight-box" style="margin-top: 20px;">
-                            <strong>German Law (KI-MIG):</strong> The draft is out. The <strong>Bundesnetzagentur (BNetzA)</strong> will be the central market surveillance authority
+                            <strong>German Law (KI-VO):</strong> <a href="https://bmds.bund.de/service/gesetzgebungsverfahren/gesetz-zur-durchfuehrung-der-ki-verordnung" target="_blank">The draft is out</a>. The <strong>Bundesnetzagentur (BNetzA)</strong> will be the central market surveillance authority. <strong>Regulations will be enforced by October 2026 earliest (expect delays and changes!).</strong>
                         </div>
                     </div>
                     <div class="section-content">
@@ -1009,7 +1012,13 @@
                         <ul class="bullet-list">
                             <li><strong>Looking for structured, certified learning on AI regulation or compliance?</strong></li>
                             <li>
-                                <strong>KI-Campus</strong> (<a href="https://ki-campus.org" target="_blank">ki-campus.org</a>) offers a wide range of free, high-quality online courses and micro-certifications in German, covering AI, data ethics, the AI Act, and law.
+                                As of now (Nov 2025), there is no regulation of AI training providers/certfications in Germany. 
+                            </li>
+                            <li>
+                                You should be safe with having your employees get certifications from reputable AI training providers.
+                            </li>
+                            <li>
+                                I do recommend the free offering of <strong>KI-Campus</strong> (<a href="https://ki-campus.org" target="_blank">ki-campus.org</a>). They offers a wide range of free, high-quality online courses and micro-certifications in German, covering AI, data ethics, the AI Act, and law.
                             </li>
                             <li>
                                 Include such courses as part of onboarding and annual staff training for compliance (Art. 4).
@@ -1069,29 +1078,33 @@
                     <div class="section-content">
                         <h3 style="color: var(--color-primary); margin-bottom: 16px;">LLM (Chat &amp; Reasoning)</h3>
                         <ul class="bullet-list">
-                            <li><strong><code>gpt-oss-120b</code>:</strong> Best overall open-weight model for reasoning (effort: high) - especially for typical chatbot cases</li>
-                            <li><strong><code>qwen3-next-80b-A3B-instruct</code>:</strong> Incredible performance, task-dependent better than <code>gpt-oss-120b</code></li>
+                            <li><strong><code>OpenAI/gpt-oss-120b</code>:</strong> Best overall open-weight model for reasoning (effort: high) - especially for typical chatbot cases</li>
+                            <li><strong><code>Qwen/qwen3-next-80b-A3B-instruct</code>:</strong> Incredible performance, task-dependent better than <code>gpt-oss-120b</code></li>
                         </ul>
                         <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">Embedding (RAG &amp; Semantic Search)</h3>
                         <ul class="bullet-list">
-                            <li><strong><code>qwen3-embedding-8b</code>:</strong> Best overall performance in realworld use-cases</li>
-                        </ul>
-                    </div>
-                    <div class="section-content">
-                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">ASR (Speech-to-Text)</h3>
-                        <ul class="bullet-list">
-                            <li><strong><code>FAIR/META omnilingual-asr</code></strong> Since yesterday - CER ~4.5% for German</li>
-                            <li><code>qwen3-omni-30b-A3B-instruct</code>: Very high multilingual precision even in noisy environments; Audio classification even for non-voice audio (music, fx etc.)</li>
-                        </ul>
-                        <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">VLM (Vision / Multimodal)</h3>
-                        <ul class="bullet-list">
-                            <li><strong><code>qwen3-omni</code>:</strong> Excellent object detection and grounding for images and videos</li>
-                            <li><code>MiniCPM-V-4_5</code>: Smaller model that performs very well according to its size</li>
+                            <li><strong><code>Qwen/qwen3-embedding-8b</code>:</strong> Best overall performance in realworld use-cases</li>
+                            <lI><code>ibm-granite/granite-embedding-models</code> - Various well-performing embedding and reranking models of different sizes</lI>
                         </ul>
                         <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">OCR (Text Recognition)</h3>
                         <ul class="bullet-list">
                             <li><strong><code>datalab-to/chandra</code>:</strong> SOTA for complex documents</li>
                             <li>(Previously: <code>AllenAI olmOCR 2</code>)</li>
+                        </ul>
+                    </div>
+                    <div class="section-content">
+                        <h3 style="color: var(--color-primary); margin-bottom: 16px;">ASR (Speech-to-Text)</h3>
+                        <ul class="bullet-list">
+                            <li>Realtime: <code>nvidia/parakeet-tdt-0.6b-v3 (faster)</code> or <code>nvidia/canary-1b-v2</code> (higher precision)</li>
+                            <li>Best Whisper-like: <code>nyrahealth/CrisperWhisper</code> or <code>unsloth/nyrahealth/CrisperWhisper</code> - for MLX-based inference, use <strong>my model <a href="https://huggingface.co/kyr0/crisperwhisper-unsloth-mlx-8b" target="_blank">kyr0/crisperwhisper-unsloth-mlx-8b</a></strong></li>
+                            <li><code>qwen3-omni-30b-A3B-instruct</code>: Very high multilingual precision even in noisy environments; Audio classification even for non-voice audio (music, fx etc.)</li>
+                            <li>Potential runner-up: FAIR (Meta) omnilingual-asr</li>
+                        </ul>
+                        <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">VLM (Vision / Multimodal)</h3>
+                        <ul class="bullet-list">
+                            <li><strong><code>Qwen/qwen3-omni</code>:</strong> Excellent object detection and grounding for images and videos</li>
+                            <li><strong><code>Qwen/qwen3-vl</code>:</strong> Smaller model that performs very well according to its size</li>
+                            <li><code>OpenBMB/MiniCPM-V-4_5</code>: Even smaller model that performs very well according to its size</li>
                         </ul>
                     </div>
                 </div>
@@ -1105,40 +1118,42 @@
                     <div class="section-content">
                         <h3 style="color: var(--color-primary); margin-bottom: 16px;">🚀 2025: The Shift From Experimental to Standard</h3>
                         <ul class="bullet-list">
-                            <li><strong>Intra-Layer Hybridization:</strong> Parallel attention + SSM heads within same layer (not sequential stacking)</li>
-                            <li><strong>Why It Matters:</strong> 3-5x faster inference on long contexts</li>
-                            <li><strong>Industry Consensus:</strong> Meta (Llama) -> Jamba, Google (Gemini) -> Griffin/Mamba, Alibaba (Qwen) -> Gated DeltaNet</li>
+                            <li><strong>Hybrid SSM + Attention Architectures:</strong> Interleaved SSM (State Space Model) + Attention blocks today, with more intra-layer mixing emerging</li>
+                            <li><strong>Why It Matters:</strong> ~3× faster throughput on long-context workloads vs. pure original Transformer baselines</li>
+                            <li><strong>Growing Industry Trend:</strong> AI21 (Jamba), Google (Griffin), Alibaba (Qwen3/Gated DeltaNet)</li>
                         </ul>
-                        <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">🎯 What You'll See in 2026</h3>
+                        <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">🎯 What We Might See in 2026</h3>
                         <ul class="bullet-list">
-                            <li>🌟 <strong>Ultra-Sparse MoE:</strong> 8-64 experts with small % of activation (like Qwen3-Next)</li>
-                            <li>🌟 <strong>Context Windows:</strong> 256K tokens native (vs. 32K today)</li>
-                            <li>🌟 <strong>Hardware Optimization:</strong> Specialized kernels for hybrid primitives</li>
+                            <li>🌟 <strong>Ultra-Sparse MoE:</strong> Tens to hundreds of experts, with only a small fraction active per token (e.g. Qwen3-Next)</li>
+                            <li>🌟 <strong>Context Windows:</strong> 256K–1M native-token contexts becoming standard, not just frontier-only</li>
+                            <li>🌟 <strong>Hardware Optimization:</strong> Specialized kernels and runtimes for hybrid primitives, dual-mode (NPU/APU/TPU + GPU) inference engines</li>
                         </ul>
-
+        
                         <ul class="bullet-list">
-                            <li>🌟 <strong>O(n) Inference:</strong> Throughput scales linearly with context length (not quadratically degrading)</li>
-                            <li>🌟 <strong>Memory Efficiency:</strong> 500K to 1M tokens context without memory cliffs</li>
-                            <li>🌟 <strong>No Performance Degradation:</strong> Longer contexts = SAME performance (not worse like traditional transformers)</li>
+                            <li>🌟 <strong>Dominantly O(n) Inference:</strong> More layers scale roughly linearly with context length, improving long-context throughput vs. quadratic attention</li>
+                            <li>🌟 <strong>Memory Efficiency:</strong> 500K to 1M-token contexts with more graceful scaling instead of sharp memory cliffs</li>
+                            <li>🌟 <strong>Reduced Performance Degradation:</strong> Longer contexts remain usable with slower quality drop-off than in traditional transformers</li>
                         </ul>
                     </div>
                     <div class="section-content">
                         <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">🛠️ Hardware-Model Co-Design Matures</h3>
                         <ul class="bullet-list">
-                            <li>🌟 <strong>Specialized Silicon:</strong> Continuation of advanced hardware, APUs, NPUs, unified memory, native quantization, etc.</li>
-                            <li>🌟<strong>Modular Inference:</strong> Deploy SSM on CPUs, attention on NPUs, MoE experts distributed</li>
-                            <li>🌟<strong>On-Device Inference:</strong> 7B-13B models run efficiently on consumer hardware with linear attention</li>
+                            <li>🌟 <strong>Specialized Silicon:</strong> Continued advances in APUs, NPUs, unified memory, native quantization, etc.</li>
+                            <li>🌟 <strong>Modular Inference:</strong> Deploy SSM on CPUs, attention on NPUs, MoE experts distributed</li>
+                            <li>🌟 <strong>On-Device Inference:</strong> 7B–13B models run efficiently on consumer hardware and high-end mobile devices with mixed linear/SSM–attention architectures</li>
                         </ul>
                         <h3 style="color: var(--color-primary); margin-top: 20px; margin-bottom: 16px;">🛣️ Potential Outcomes</h3>
                         <ul class="bullet-list">
-                            <li>🌟 <strong>Pure Linear Models:</strong> Fully sub-quadratic architectures compete with hybrids</li>
-                            <li>🌟 <strong>Adaptive Routing:</strong> Models dynamically choose SSM vs. attention per token</li>
-                            <li>🌟 <strong>On-Device Dominates:</strong> More and more efficient inference enables consumer deployment</li>
+                            <li>🌟 <strong>Close-to-Linear Attention Models:</strong> Sub-quadratic scaling architectures compete directly with hybrids</li>
+                            <li>🌟 <strong>Adaptive Routing:</strong> Models dynamically choose computation type by activating layers based on the context</li>
+                            <li>🌟 <strong>On-Device Ramps Up:</strong> Efficient inference enables broad consumer deployment; SMEs increasingly adopt on-premise AI infrastructure in the EU</li>
+                            <li>🌟 <strong>EU AI Act Revision:</strong> A more realistic timeline and/or a simplified framrwork will be enforced</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+        
         
         <!-- Slide 37: How Do I Stay Up-to-Date? -->
         <div class="slide" data-slide="37">
@@ -1166,7 +1181,7 @@
                         <ul class="bullet-list">
                             <li>Active participation in Discord servers (e.g., Unsloth AI, <code>llama.cpp</code>)</li>
                             <li>Direct discussion with peers, researchers, and other AI engineers</li>
-                            <li>This is what I'm <b>trying to fix</b> this Hackathon :)</li>
+                            <li>This is what I'm <b>trying to fix</b>!</li>
                         </ul>
                     </div>
                 </div>
@@ -1179,13 +1194,15 @@
             <div class="slide-content">
                 <div class="two-column" style="align-items: flex-start;">
                     <div class="section-content">
-                        <p style="font-size: 20px; margin-bottom: 20px;"><strong>I'm launching a new, focused community for AI/ML practitioners and researchers.</strong></p>
+                        <p style="font-size: 20px; margin-bottom: 20px;"><strong>I'm launching a new, ML-focused community for active, committed AI/ML practitioners and researchers; no hype, just engineering - deep, focused LLM Ops & model architecture discussions.</strong></p>
                         <h1 style="font-size: 48px; color: var(--color-primary); margin-bottom: 24px;">minloss.club</h1>
                         <ul class="bullet-list">
-                            <li><strong>What:</strong> A community for AI developers, engineers, and researchers</li>
+                            <li><strong>What:</strong> A community for ML/AI developers, engineers, and researchers - no Marketing, no HR, no BS - invite only!</li>
                             <li><strong>Why:</strong> To share practical knowledge, code, and strategies for building real-world AI. No hype, just engineering</li>
-                            <li><strong>How:</strong> A smart scraper that automates the process I've described. New models/papers are discovered before anyone else knows, de-duplicated and cleaned from noise!</li>
-                            <li><strong>Where:</strong> A simple, private micro-community (Mattermost) + Blog + Mailing list</li>
+                            <li><strong>How:</strong> Info sourcing driven by a smart scraper and KG model that I developed - it automates the process I've described.</li>
+                            <li>New models/papers are discovered auto-magically before anyone else knows, get de-duplicated and cleaned from noise - our loss function measures productivity ;)</li>
+                            <li><strong>Where:</strong> A simple, private engineering VIP micro-community (Mattermost) + public Blog + Mailing List</li>
+                            <li><strong>Vision:</strong> We make the people happy, who actually do the hard work!</li>
                         </ul>
                     </div>
                     <div class="section-content" style="display: flex;  align-items: center; gap: 26px; 
@@ -1201,14 +1218,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Slide 39: Live Demo -->
-        <div class="slide" data-slide="39">
-            <h2 class="slide-title">Live Demo: H200 in Action</h2>
-            <div class="slide-content" style="text-align: center; padding-top: 60px;">
-                <iframe src="https://chat.kim-dev.de" style="width: 100%; height: 100%; border: 2px solid var(--color-primary); border-radius: 8px;"></iframe>
             </div>
         </div>
 

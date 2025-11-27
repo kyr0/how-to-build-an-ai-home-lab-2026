@@ -6,6 +6,14 @@ let currentSlide = 1;
 let shaderInstance = null;
 let footerVisible = true;
 
+// Touch/swipe state
+let touchStartX = null;
+let touchStartY = null;
+let touchEndX = null;
+let touchEndY = null;
+let lastTapTime = 0;
+let tapTimeout = null;
+
 const state = {
   currentIndicator: null,
   totalIndicator: null,
@@ -121,6 +129,98 @@ function toggleFooter() {
   setFooterVisibility(!footerVisible);
 }
 
+function handleTouchStart(event) {
+  // Cancel any pending tap timeout
+  if (tapTimeout) {
+    clearTimeout(tapTimeout);
+    tapTimeout = null;
+  }
+
+  const touch = event.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  touchEndX = null;
+  touchEndY = null;
+}
+
+function handleTouchMove(event) {
+  if (touchStartX === null) {
+    return;
+  }
+
+  const touch = event.touches[0];
+  const deltaX = Math.abs(touch.clientX - touchStartX);
+  const deltaY = Math.abs(touch.clientY - touchStartY);
+
+  // Only prevent default if it's a horizontal swipe (prevents page scroll)
+  if (deltaX > deltaY && deltaX > 10) {
+    event.preventDefault();
+  }
+}
+
+function handleTouchEnd(event) {
+  if (touchStartX === null) {
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+  touchEndX = touch.clientX;
+  touchEndY = touch.clientY;
+
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+  const absDeltaX = Math.abs(deltaX);
+  const absDeltaY = Math.abs(deltaY);
+
+  // Check if it's a horizontal swipe (more horizontal than vertical)
+  if (absDeltaX > absDeltaY && absDeltaX > 50) {
+    // Swipe left = next slide
+    if (deltaX < 0) {
+      changeSlide(1);
+    }
+    // Swipe right = previous slide
+    else if (deltaX > 0) {
+      changeSlide(-1);
+    }
+  }
+  // Check if it's a tap (small movement)
+  else if (absDeltaX < 30 && absDeltaY < 30) {
+    // Check if we clicked on a button or link
+    const target = event.target;
+    const isClickable = target.closest('button, a, input, textarea, select');
+    
+    if (!isClickable) {
+      // Tap to advance - only if not on a clickable element
+      const currentTime = Date.now();
+      const timeDiff = currentTime - lastTapTime;
+      
+      // Clear any pending tap timeout
+      if (tapTimeout) {
+        clearTimeout(tapTimeout);
+      }
+      
+      // If double tap (within 300ms), do nothing (user might be zooming)
+      if (timeDiff < 300) {
+        lastTapTime = 0;
+        return;
+      }
+      
+      // Single tap - advance after a short delay to avoid accidental taps
+      tapTimeout = setTimeout(() => {
+        changeSlide(1);
+      }, 100);
+      
+      lastTapTime = currentTime;
+    }
+  }
+
+  // Reset touch state
+  touchStartX = null;
+  touchStartY = null;
+  touchEndX = null;
+  touchEndY = null;
+}
+
 function initShader() {
   const container = document.getElementById("shader-background");
 
@@ -161,6 +261,13 @@ function initNavigation() {
   resetBtn?.addEventListener("click", () => goToSlide(1));
 
   document.addEventListener("keydown", handleKeydown);
+
+  // Add touch event listeners for mobile swipe and tap
+  if (state.container) {
+    state.container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    state.container.addEventListener("touchmove", handleTouchMove, { passive: false });
+    state.container.addEventListener("touchend", handleTouchEnd, { passive: true });
+  }
 
   setFooterVisibility(true);
   showSlide(currentSlide);
