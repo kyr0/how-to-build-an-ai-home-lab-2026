@@ -181,17 +181,8 @@ function handleClick(event) {
     return;
   }
   
-  // Determine which side of screen was clicked
-  const screenWidth = window.innerWidth;
-  const clickX = event.clientX;
-  const isLeftSide = clickX < screenWidth / 2;
-  
-  // Navigate based on side
-  if (isLeftSide) {
-    changeSlide(-1); // Left side = previous
-  } else {
-    changeSlide(1);  // Right side = next
-  }
+  // Always go forward on click
+  changeSlide(1);
 }
 
 function handleTouchStart(event) {
@@ -296,14 +287,10 @@ function handleTouchEnd(event) {
     const tapX = touchEndX;
     const isLeftSide = tapX < screenWidth / 2;
     
-    // Single tap - navigate based on side after a short delay
+    // Single tap - always go forward after a short delay
     tapTimeout = setTimeout(() => {
       touchHandled = true;
-      if (isLeftSide) {
-        changeSlide(-1); // Left side = previous
-      } else {
-        changeSlide(1);  // Right side = next
-      }
+      changeSlide(1);  // Always go forward
       tapTimeout = null;
       // Reset flag after a delay to allow click events later
       setTimeout(() => {
