@@ -61,6 +61,36 @@ function showSlide(target) {
     activeSlide.scrollTop = 0;
   }
 
+  // Disable shader from slide 2 onwards
+  const shaderBackground = document.getElementById("shader-background");
+  if (shaderBackground) {
+    if (currentSlide === 1) {
+      // Show shader on slide 1
+      shaderBackground.classList.remove("shader-hidden");
+      shaderBackground.style.display = "block";
+      shaderBackground.style.visibility = "visible";
+      shaderBackground.style.pointerEvents = "auto";
+      // Resume shader animation if it exists and was paused
+      if (shaderInstance && shaderInstance.frameId === null && shaderInstance.gl) {
+        shaderInstance.frameId = requestAnimationFrame(shaderInstance.render);
+      }
+    } else {
+      // Hide shader on all other slides
+      shaderBackground.classList.add("shader-hidden");
+      shaderBackground.style.display = "none";
+      shaderBackground.style.visibility = "hidden";
+      shaderBackground.style.pointerEvents = "none";
+      // Pause shader animation to save resources
+      if (shaderInstance && shaderInstance.frameId !== null) {
+        cancelAnimationFrame(shaderInstance.frameId);
+        shaderInstance.frameId = null;
+      }
+    }
+  }
+
+  // Fix mobile layouts when slide changes
+  fixMobileLayouts();
+
   updateIndicators();
 }
 
@@ -371,9 +401,77 @@ function initNavigation() {
   showSlide(currentSlide);
 }
 
+function fixMobileLayouts() {
+  // Check if we're on mobile/tablet
+  const isMobile = window.innerWidth <= 900;
+  
+  // Fix slide 40 layout
+  const slide40 = document.querySelector('.slide[data-slide="40"]');
+  if (slide40) {
+    const slideContent = slide40.querySelector('.slide-content');
+    if (slideContent) {
+      // Get the div with display: flex - it's the one with inline styles
+      // Look for divs that have style attribute with display:flex
+      const allDivs = slideContent.querySelectorAll('div');
+      let flexContainer = null;
+      
+      for (const div of allDivs) {
+        const styleAttr = div.getAttribute('style') || '';
+        if (styleAttr.includes('display: flex') || div.style.display === 'flex') {
+          flexContainer = div;
+          break;
+        }
+      }
+      
+      // Fallback: get second child div of slide-content
+      if (!flexContainer && slideContent.children.length > 1) {
+        flexContainer = slideContent.children[1];
+      }
+      
+      if (flexContainer && flexContainer.tagName === 'DIV') {
+        if (isMobile) {
+          // Force mobile layout by directly overriding inline styles
+          // Use direct assignment which overrides inline styles
+          const originalStyle = flexContainer.getAttribute('style') || '';
+          flexContainer.style.cssText = originalStyle + 
+            '; flex-direction: column !important;' +
+            ' align-items: center !important;' +
+            ' gap: 32px !important;' +
+            ' flex-wrap: wrap !important;';
+          
+          // Fix child divs
+          const childDivs = Array.from(flexContainer.children);
+          childDivs.forEach(div => {
+            const childStyle = div.getAttribute('style') || '';
+            div.style.cssText = childStyle + 
+              '; width: 100% !important;' +
+              ' max-width: 100% !important;' +
+              ' flex: 1 1 100% !important;';
+          });
+          
+          // Fix images
+          const images = flexContainer.querySelectorAll('img');
+          images.forEach(img => {
+            const imgStyle = img.getAttribute('style') || '';
+            img.style.cssText = imgStyle + 
+              '; max-width: 100% !important;' +
+              ' width: auto !important;' +
+              ' height: auto !important;' +
+              ' max-height: 400px !important;';
+          });
+        }
+      }
+    }
+  }
+}
+
 function init() {
   initShader();
   initNavigation();
+  
+  // Fix mobile layouts on load and resize
+  fixMobileLayouts();
+  window.addEventListener('resize', fixMobileLayouts);
 }
 
 if (document.readyState === "loading") {

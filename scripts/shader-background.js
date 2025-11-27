@@ -284,6 +284,12 @@ export default class ShaderBackground {
       return;
     }
 
+    // Check if container is visible before rendering
+    if (this.container && (this.container.style.display === "none" || this.container.style.visibility === "hidden")) {
+      this.frameId = null;
+      return;
+    }
+
     const gl = this.gl;
     const elapsed = (now - this.start) / 1000;
 
