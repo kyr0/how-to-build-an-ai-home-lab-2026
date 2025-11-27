@@ -144,10 +144,6 @@
   --container-xl: 1280px;
 }
 
-body {
-  font-size: 130% !important;
-}
-
 /* Dark mode colors */
 @media (prefers-color-scheme: dark) {
   :root {
