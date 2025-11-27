@@ -13,6 +13,7 @@ let touchEndX = null;
 let touchEndY = null;
 let lastTapTime = 0;
 let tapTimeout = null;
+let touchHandled = false; // Flag to prevent click after touch
 
 const state = {
   currentIndicator: null,
@@ -129,6 +130,40 @@ function toggleFooter() {
   setFooterVisibility(!footerVisible);
 }
 
+function handleClick(event) {
+  // Ignore if this was already handled by a touch event
+  if (touchHandled) {
+    return;
+  }
+  
+  // Check if we clicked on a button, link, or navigation area
+  const target = event.target;
+  const isClickable = target.closest('button, a, input, textarea, select, .navigation');
+  
+  // Don't interfere with clickable elements or navigation
+  if (isClickable) {
+    return;
+  }
+  
+  // Only handle clicks on slide content
+  const isOnSlide = target.closest('.slide');
+  if (!isOnSlide) {
+    return;
+  }
+  
+  // Determine which side of screen was clicked
+  const screenWidth = window.innerWidth;
+  const clickX = event.clientX;
+  const isLeftSide = clickX < screenWidth / 2;
+  
+  // Navigate based on side
+  if (isLeftSide) {
+    changeSlide(-1); // Left side = previous
+  } else {
+    changeSlide(1);  // Right side = next
+  }
+}
+
 function handleTouchStart(event) {
   // Cancel any pending tap timeout
   if (tapTimeout) {
@@ -136,6 +171,7 @@ function handleTouchStart(event) {
     tapTimeout = null;
   }
 
+  touchHandled = false; // Reset flag
   const touch = event.touches[0];
   touchStartX = touch.clientX;
   touchStartY = touch.clientY;
@@ -149,11 +185,16 @@ function handleTouchMove(event) {
   }
 
   const touch = event.touches[0];
+  if (!touch) {
+    return;
+  }
+
   const deltaX = Math.abs(touch.clientX - touchStartX);
   const deltaY = Math.abs(touch.clientY - touchStartY);
 
-  // Only prevent default if it's a horizontal swipe (prevents page scroll)
-  if (deltaX > deltaY && deltaX > 10) {
+  // Only prevent default if it's clearly a horizontal swipe (prevents page scroll)
+  // Use a threshold to distinguish between scrolling and swiping
+  if (deltaX > deltaY && deltaX > 15) {
     event.preventDefault();
   }
 }
@@ -164,6 +205,15 @@ function handleTouchEnd(event) {
   }
 
   const touch = event.changedTouches[0];
+  if (!touch) {
+    // Reset touch state
+    touchStartX = null;
+    touchStartY = null;
+    touchEndX = null;
+    touchEndY = null;
+    return;
+  }
+
   touchEndX = touch.clientX;
   touchEndY = touch.clientY;
 
@@ -172,46 +222,66 @@ function handleTouchEnd(event) {
   const absDeltaX = Math.abs(deltaX);
   const absDeltaY = Math.abs(deltaY);
 
+  // Check if we clicked on a button or link first
+  const target = event.target;
+  const isClickable = target.closest('button, a, input, textarea, select');
+
   // Check if it's a horizontal swipe (more horizontal than vertical)
-  if (absDeltaX > absDeltaY && absDeltaX > 50) {
+  // Reduced threshold for easier triggering on mobile
+  if (absDeltaX > absDeltaY && absDeltaX > 40 && !isClickable) {
     // Swipe left = next slide
     if (deltaX < 0) {
+      event.preventDefault();
+      touchHandled = true;
       changeSlide(1);
     }
     // Swipe right = previous slide
     else if (deltaX > 0) {
+      event.preventDefault();
+      touchHandled = true;
       changeSlide(-1);
     }
   }
   // Check if it's a tap (small movement)
-  else if (absDeltaX < 30 && absDeltaY < 30) {
-    // Check if we clicked on a button or link
-    const target = event.target;
-    const isClickable = target.closest('button, a, input, textarea, select');
+  // Increased threshold slightly to allow for natural finger movement
+  else if (absDeltaX < 40 && absDeltaY < 40 && !isClickable) {
+    // Tap to navigate based on screen position
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastTapTime;
     
-    if (!isClickable) {
-      // Tap to advance - only if not on a clickable element
-      const currentTime = Date.now();
-      const timeDiff = currentTime - lastTapTime;
-      
-      // Clear any pending tap timeout
-      if (tapTimeout) {
-        clearTimeout(tapTimeout);
-      }
-      
-      // If double tap (within 300ms), do nothing (user might be zooming)
-      if (timeDiff < 300) {
-        lastTapTime = 0;
-        return;
-      }
-      
-      // Single tap - advance after a short delay to avoid accidental taps
-      tapTimeout = setTimeout(() => {
-        changeSlide(1);
-      }, 100);
-      
-      lastTapTime = currentTime;
+    // Clear any pending tap timeout
+    if (tapTimeout) {
+      clearTimeout(tapTimeout);
+      tapTimeout = null;
     }
+    
+    // If double tap (within 300ms), do nothing (user might be zooming)
+    if (timeDiff < 300 && timeDiff > 0) {
+      lastTapTime = 0;
+      return;
+    }
+    
+    // Determine which side of screen was tapped
+    const screenWidth = window.innerWidth;
+    const tapX = touchEndX;
+    const isLeftSide = tapX < screenWidth / 2;
+    
+    // Single tap - navigate based on side after a short delay
+    tapTimeout = setTimeout(() => {
+      touchHandled = true;
+      if (isLeftSide) {
+        changeSlide(-1); // Left side = previous
+      } else {
+        changeSlide(1);  // Right side = next
+      }
+      tapTimeout = null;
+      // Reset flag after a delay to allow click events later
+      setTimeout(() => {
+        touchHandled = false;
+      }, 300);
+    }, 100);
+    
+    lastTapTime = currentTime;
   }
 
   // Reset touch state
@@ -263,10 +333,38 @@ function initNavigation() {
   document.addEventListener("keydown", handleKeydown);
 
   // Add touch event listeners for mobile swipe and tap
+  // Attach to both container and individual slides for better coverage
+  const handleTouchCancel = () => {
+    // Reset touch state on cancel
+    touchStartX = null;
+    touchStartY = null;
+    touchEndX = null;
+    touchEndY = null;
+    if (tapTimeout) {
+      clearTimeout(tapTimeout);
+      tapTimeout = null;
+    }
+  };
+
+  // Attach touch events to container
   if (state.container) {
     state.container.addEventListener("touchstart", handleTouchStart, { passive: true });
     state.container.addEventListener("touchmove", handleTouchMove, { passive: false });
     state.container.addEventListener("touchend", handleTouchEnd, { passive: true });
+    state.container.addEventListener("touchcancel", handleTouchCancel, { passive: true });
+  }
+  
+  // Also attach to each slide for better touch detection
+  slides.forEach((slide) => {
+    slide.addEventListener("touchstart", handleTouchStart, { passive: true });
+    slide.addEventListener("touchmove", handleTouchMove, { passive: false });
+    slide.addEventListener("touchend", handleTouchEnd, { passive: true });
+    slide.addEventListener("touchcancel", handleTouchCancel, { passive: true });
+  });
+
+  // Add click handler to container for desktop (events bubble from slides)
+  if (state.container) {
+    state.container.addEventListener("click", handleClick);
   }
 
   setFooterVisibility(true);

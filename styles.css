@@ -834,6 +834,47 @@ body::after {
   .title-slide .slide-title {
     font-size: 32px;
   }
+
+  /* Ensure navigation is visible on mobile */
+  .navigation {
+    display: flex !important;
+    opacity: 1 !important;
+    height: var(--footer-height) !important;
+    padding: 0 var(--space-16) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .navigation.is-hidden {
+    /* Override is-hidden on mobile to keep navigation visible */
+    opacity: 1 !important;
+    height: var(--footer-height) !important;
+    padding: 0 var(--space-16) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    border: 1px solid rgba(var(--color-teal-500-rgb), 0.16) !important;
+  }
+
+  .nav-buttons {
+    gap: var(--space-8);
+    display: flex !important;
+  }
+
+  .btn {
+    padding: var(--space-8) var(--space-16);
+    font-size: var(--font-size-sm);
+    min-height: 44px; /* Better touch target */
+    min-width: 80px;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .slide-counter {
+    font-size: var(--font-size-sm);
+    display: block !important;
+    visibility: visible !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
