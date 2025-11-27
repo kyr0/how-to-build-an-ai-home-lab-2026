@@ -841,7 +841,7 @@ body::after {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .model-grid,
   .comparison-grid,
   .two-column {
